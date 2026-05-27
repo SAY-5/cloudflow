@@ -8,6 +8,8 @@ import org.springframework.data.repository.query.Param;
 
 public interface RagChunkRepository extends JpaRepository<RagChunkEntity, String> {
 
+  List<RagChunkEntity> findBySource(String source);
+
   @Query(
       "select c from RagChunkEntity c where c.source = 'log' and c.service = :service "
           + "and c.ts >= :from and c.ts < :to")
