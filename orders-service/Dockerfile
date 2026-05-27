@@ -1,10 +1,15 @@
 # Multi-stage build for the orders service. Built from the repo root so the
-# Maven reactor can resolve platform-common.
+# Maven reactor can resolve platform-common. All module directories are copied
+# so the reactor in the root pom resolves, but only this module is packaged.
 FROM maven:3.9-eclipse-temurin-21 AS build
 WORKDIR /workspace
 COPY pom.xml .
 COPY platform-common platform-common
 COPY orders-service orders-service
+COPY inventory-service inventory-service
+COPY gateway gateway
+COPY log-collector log-collector
+COPY ops-assistant ops-assistant
 RUN mvn -B -q -pl orders-service -am -DskipTests package
 
 FROM eclipse-temurin:21-jre AS run
