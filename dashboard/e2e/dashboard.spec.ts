@@ -19,6 +19,8 @@ test.describe("CloudFlow ops dashboard", () => {
     await page.getByRole("button", { name: "Ask" }).click();
 
     await expect(page.getByRole("heading", { name: "Citations" })).toBeVisible();
-    await expect(page.getByText(/doc:rollback-inventory/)).toBeVisible();
+    // The answer text and each citation id both mention the runbook, so scope to a
+    // citation <code> element and take the first match.
+    await expect(page.locator("code", { hasText: /doc:rollback-inventory/ }).first()).toBeVisible();
   });
 });
