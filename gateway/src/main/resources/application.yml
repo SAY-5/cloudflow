@@ -9,6 +9,7 @@ cloudflow:
   services:
     orders: ${ORDERS_URL:http://localhost:8081}
     inventory: ${INVENTORY_URL:http://localhost:8082}
+    collector: ${COLLECTOR_URL:http://localhost:8083}
     assistant: ${ASSISTANT_URL:http://localhost:8084}
 management:
   endpoints:
