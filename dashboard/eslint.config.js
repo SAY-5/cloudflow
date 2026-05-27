@@ -21,6 +21,7 @@ export default [
         Request: "readonly",
         Headers: "readonly",
         HTMLInputElement: "readonly",
+        process: "readonly",
         console: "readonly",
         setTimeout: "readonly",
       },
