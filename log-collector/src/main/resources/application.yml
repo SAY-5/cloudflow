@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: log-collector
+  datasource:
+    url: ${RAG_DB_URL:jdbc:h2:mem:rag;DB_CLOSE_DELAY=-1;MODE=PostgreSQL}
+    username: ${RAG_DB_USER:sa}
+    password: ${RAG_DB_PASSWORD:}
+  jpa:
+    hibernate:
+      ddl-auto: none
+    open-in-view: false
+server:
+  port: ${SERVER_PORT:8083}
+cloudflow:
+  embed:
+    dimension: 256
+  runbooks:
+    dir: ${RUNBOOKS_DIR:docs/runbooks}
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info

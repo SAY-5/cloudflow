@@ -1,0 +1,106 @@
+# Hybrid-cloud knobs for the whole platform. Per-service blocks let you tune
+# replica counts, resource limits, autoscaling, and image tags per environment.
+
+global:
+  imageRegistry: ghcr.io/say-5
+  imagePullPolicy: IfNotPresent
+  environment: dev
+
+postgres:
+  enabled: true
+  image: pgvector/pgvector:pg16
+  storage: 1Gi
+  database: cloudflow
+  username: cloudflow
+
+services:
+  orders:
+    enabled: true
+    image: cloudflow/orders
+    tag: "0.1.0"
+    replicas: 2
+    port: 8081
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+      limits:
+        cpu: 500m
+        memory: 512Mi
+    autoscaling:
+      enabled: true
+      minReplicas: 2
+      maxReplicas: 6
+      targetCPUUtilizationPercentage: 70
+  inventory:
+    enabled: true
+    image: cloudflow/inventory
+    tag: "0.1.0"
+    replicas: 2
+    port: 8082
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+      limits:
+        cpu: 500m
+        memory: 512Mi
+    autoscaling:
+      enabled: true
+      minReplicas: 2
+      maxReplicas: 6
+      targetCPUUtilizationPercentage: 70
+  gateway:
+    enabled: true
+    image: cloudflow/gateway
+    tag: "0.1.0"
+    replicas: 2
+    port: 8080
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+      limits:
+        cpu: 500m
+        memory: 512Mi
+    autoscaling:
+      enabled: false
+  logCollector:
+    enabled: true
+    image: cloudflow/log-collector
+    tag: "0.1.0"
+    replicas: 1
+    port: 8083
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+      limits:
+        cpu: 500m
+        memory: 512Mi
+  opsAssistant:
+    enabled: true
+    image: cloudflow/ops-assistant
+    tag: "0.1.0"
+    replicas: 1
+    port: 8084
+    resources:
+      requests:
+        cpu: 200m
+        memory: 384Mi
+      limits:
+        cpu: 1000m
+        memory: 768Mi
+  dashboard:
+    enabled: true
+    image: cloudflow/dashboard
+    tag: "0.1.0"
+    replicas: 2
+    port: 80
+    resources:
+      requests:
+        cpu: 50m
+        memory: 64Mi
+      limits:
+        cpu: 200m
+        memory: 128Mi

@@ -1,0 +1,13 @@
+apiVersion: v2
+name: cloudflow
+description: CloudFlow hybrid-cloud microservice platform with an LLM ops-assistant
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
+keywords:
+  - microservices
+  - spring-boot
+  - llm
+  - observability
+maintainers:
+  - name: Sai Asish Y

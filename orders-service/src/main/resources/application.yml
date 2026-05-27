@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: orders
+  datasource:
+    url: ${ORDERS_DB_URL:jdbc:h2:mem:orders;DB_CLOSE_DELAY=-1;MODE=PostgreSQL}
+    username: ${ORDERS_DB_USER:sa}
+    password: ${ORDERS_DB_PASSWORD:}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+server:
+  port: ${SERVER_PORT:8081}
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
