@@ -35,7 +35,7 @@
     <jqwik.version>1.9.1</jqwik.version>
     <testcontainers.version>1.20.3</testcontainers.version>
     <jacoco.version>0.8.12</jacoco.version>
-    <jacoco.line.min>0.00</jacoco.line.min>
+    <jacoco.line.min>0.55</jacoco.line.min>
   </properties>
 
   <dependencyManagement>
