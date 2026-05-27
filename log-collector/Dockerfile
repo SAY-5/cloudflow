@@ -1,6 +1,6 @@
-# Multi-stage build for the log-collector. Built from the repo root so the
-# Maven reactor can resolve platform-common. All module directories are copied
-# so the reactor in the root pom resolves, but only this module is packaged.
+# Multi-stage build for the log-collector. Built from the repo root so the Maven reactor
+# can resolve platform-common. All module directories are copied so the reactor in
+# the root pom resolves, but only this module is packaged.
 FROM maven:3.9-eclipse-temurin-21 AS build
 WORKDIR /workspace
 COPY pom.xml .
@@ -15,9 +15,13 @@ RUN mvn -B -q -pl log-collector -am -DskipTests package
 
 FROM eclipse-temurin:21-jre AS run
 WORKDIR /app
-RUN useradd -r -u 10001 cloudflow
+RUN apt-get update && apt-get install -y --no-install-recommends curl \
+    && rm -rf /var/lib/apt/lists/* \
+    && useradd -r -u 10001 cloudflow
 COPY --from=build /workspace/log-collector/target/log-collector-*.jar app.jar
 COPY --from=build /workspace/docs/runbooks /app/docs/runbooks
 USER 10001
 EXPOSE 8083
+HEALTHCHECK --interval=10s --timeout=3s --start-period=70s --retries=15 \
+  CMD curl -fsS http://localhost:8083/actuator/health || exit 1
 ENTRYPOINT ["java", "-jar", "/app/app.jar"]

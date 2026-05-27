@@ -72,10 +72,14 @@ services:
       COLLECTOR_URL: http://log-collector:8083
       ASSISTANT_URL: http://ops-assistant:8084
     depends_on:
-      - orders
-      - inventory
-      - log-collector
-      - ops-assistant
+      orders:
+        condition: service_healthy
+      inventory:
+        condition: service_healthy
+      log-collector:
+        condition: service_healthy
+      ops-assistant:
+        condition: service_healthy
 
   dashboard:
     build:
@@ -84,4 +88,5 @@ services:
     ports:
       - "8080:80"
     depends_on:
-      - gateway
+      gateway:
+        condition: service_started
