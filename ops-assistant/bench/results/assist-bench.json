@@ -1,0 +1,6 @@
+{
+  "logCount": 100000,
+  "ingestSeconds": 0.648,
+  "ingestPerSecond": 154210.8,
+  "assist": { "count": 1000, "p50Ms": 113.5413, "p95Ms": 136.8596, "p99Ms": 171.5944, "meanMs": 116.7356 }
+}

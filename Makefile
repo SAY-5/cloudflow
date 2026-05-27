@@ -45,10 +45,12 @@ helm-validate: helm-lint ## Lint chart and validate rendered manifests with kube
 		-schema-location 'https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/{{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json'
 
 bench: ## Run the ingest + assist latency benchmark
-	$(MVN) -B -pl ops-assistant -am test -Dtest=BenchmarkRunnerTest -DfailIfNoTests=false
+	$(MVN) -B -pl ops-assistant -am test -Dtest=BenchmarkRunnerTest \
+		-Dsurefire.failIfNoSpecifiedTests=false
 
 bench-regress: ## Run the benchmark with the regression gate
-	$(MVN) -B -pl ops-assistant -am test -Dtest=BenchRegressionTest -DfailIfNoTests=false
+	$(MVN) -B -pl ops-assistant -am test -Dtest=BenchRegressionTest \
+		-Dsurefire.failIfNoSpecifiedTests=false
 
 images: ## Build all service container images
 	docker build -t cloudflow/orders:dev -f orders-service/Dockerfile .
