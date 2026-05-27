@@ -18,10 +18,15 @@ public class CollectorController {
 
   private final IngestService ingestService;
   private final RagChunkRepository repository;
+  private final AnomalyDetectionService anomalyDetectionService;
 
-  public CollectorController(IngestService ingestService, RagChunkRepository repository) {
+  public CollectorController(
+      IngestService ingestService,
+      RagChunkRepository repository,
+      AnomalyDetectionService anomalyDetectionService) {
     this.ingestService = ingestService;
     this.repository = repository;
+    this.anomalyDetectionService = anomalyDetectionService;
   }
 
   public record IngestLogsRequest(List<String> lines) {}
@@ -30,10 +35,20 @@ public class CollectorController {
 
   public record LogLineView(String id, String service, String level, String msg, String ts) {}
 
+  public record DetectResult(int anomalies) {}
+
   @PostMapping("/logs")
   @ResponseStatus(HttpStatus.ACCEPTED)
   public IngestResult ingestLogs(@RequestBody IngestLogsRequest request) {
-    return new IngestResult(ingestService.ingestLogLines(request.lines()));
+    int stored = ingestService.ingestLogLines(request.lines());
+    // Re-scan for anomalies after each batch so the assistant sees fresh anomalies.
+    anomalyDetectionService.detectAndStore();
+    return new IngestResult(stored);
+  }
+
+  @PostMapping("/detect")
+  public DetectResult detect() {
+    return new DetectResult(anomalyDetectionService.detectAndStore().size());
   }
 
   /** Returns the most recent stored log lines for the dashboard log viewer. */

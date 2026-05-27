@@ -26,16 +26,19 @@ public class AssistantService {
   private final RagChunkRepository repository;
   private final Embedder embedder;
   private final LlmProvider llmProvider;
+  private final AnomalyQuestionService anomalyQuestionService;
   private final int topK;
 
   public AssistantService(
       RagChunkRepository repository,
       Embedder embedder,
       LlmProvider llmProvider,
+      AnomalyQuestionService anomalyQuestionService,
       @Value("${cloudflow.assist.top-k:6}") int topK) {
     this.repository = repository;
     this.embedder = embedder;
     this.llmProvider = llmProvider;
+    this.anomalyQuestionService = anomalyQuestionService;
     this.topK = topK;
   }
 
@@ -44,6 +47,17 @@ public class AssistantService {
   public record Citation(String id, String source, String snippet) {}
 
   public AssistResult assist(String question) {
+    // Anomaly-shaped questions are served from the anomaly store and windowed logs.
+    if (anomalyQuestionService.isAnomalyQuestion(question)) {
+      if (question.toLowerCase().contains("anomal")) {
+        return anomalyQuestionService.anomaliesToday();
+      }
+      var windowed = anomalyQuestionService.spikeAtTime(question);
+      if (windowed.isPresent()) {
+        return windowed.get();
+      }
+    }
+
     List<RagChunkEntity> all = repository.findAll();
     List<Chunk> corpus = new ArrayList<>(all.size());
     for (RagChunkEntity e : all) {
