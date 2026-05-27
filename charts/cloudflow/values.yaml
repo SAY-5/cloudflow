@@ -15,6 +15,7 @@ postgres:
 
 services:
   orders:
+    name: orders
     enabled: true
     image: cloudflow/orders
     tag: "0.1.0"
@@ -33,6 +34,7 @@ services:
       maxReplicas: 6
       targetCPUUtilizationPercentage: 70
   inventory:
+    name: inventory
     enabled: true
     image: cloudflow/inventory
     tag: "0.1.0"
@@ -51,6 +53,7 @@ services:
       maxReplicas: 6
       targetCPUUtilizationPercentage: 70
   gateway:
+    name: gateway
     enabled: true
     image: cloudflow/gateway
     tag: "0.1.0"
@@ -66,6 +69,7 @@ services:
     autoscaling:
       enabled: false
   logCollector:
+    name: log-collector
     enabled: true
     image: cloudflow/log-collector
     tag: "0.1.0"
@@ -79,6 +83,7 @@ services:
         cpu: 500m
         memory: 512Mi
   opsAssistant:
+    name: ops-assistant
     enabled: true
     image: cloudflow/ops-assistant
     tag: "0.1.0"
@@ -92,6 +97,7 @@ services:
         cpu: 1000m
         memory: 768Mi
   dashboard:
+    name: dashboard
     enabled: true
     image: cloudflow/dashboard
     tag: "0.1.0"

@@ -1,0 +1,16 @@
+CloudFlow {{ .Chart.AppVersion }} deployed as release {{ .Release.Name }}.
+
+Services:
+{{- range $key, $svc := .Values.services }}
+{{- if $svc.enabled }}
+  - {{ $svc.name | default $key }} ({{ $svc.replicas }} replica(s)) on port {{ $svc.port }}
+{{- end }}
+{{- end }}
+
+Reach the dashboard:
+  kubectl port-forward svc/{{ .Values.services.dashboard.name }} 8080:80
+
+Ask the assistant via the gateway:
+  kubectl port-forward svc/{{ .Values.services.gateway.name }} 8081:{{ .Values.services.gateway.port }}
+  curl -XPOST localhost:8081/api/assist -H 'content-type: application/json' \
+    -d '{"question":"how do I roll back inventory?"}'
