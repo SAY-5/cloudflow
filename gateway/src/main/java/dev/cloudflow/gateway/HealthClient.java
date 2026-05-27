@@ -3,6 +3,7 @@ package dev.cloudflow.gateway;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
@@ -16,6 +17,7 @@ public class HealthClient {
   private final WebClient webClient;
   private final Duration timeout;
 
+  @Autowired
   public HealthClient(GatewayProperties properties, WebClient.Builder builder) {
     this(properties, builder, Duration.ofSeconds(2));
   }

@@ -84,15 +84,25 @@ jobs:
         run: docker compose up -d --build
       - name: Wait for the gateway and seed data
         run: |
+          # Wait for the dashboard (nginx) to serve.
           for i in $(seq 1 60); do
             if curl -sf localhost:8080/ >/dev/null; then break; fi
             sleep 5
           done
-          # Seed a couple of log lines so the assistant has grounding context.
-          curl -sf -XPOST localhost:8080/api/health || true
-          curl -s -XPOST http://localhost:8080/api/assist \
-            -H 'content-type: application/json' \
-            -d '{"question":"how do I roll back inventory?"}' || true
+          # Wait for the gateway health aggregation to come up through the proxy.
+          for i in $(seq 1 60); do
+            if curl -sf localhost:8080/api/health >/dev/null; then break; fi
+            sleep 5
+          done
+          # Poll the assistant until the collector has loaded the runbooks and a
+          # rollback question returns a grounded citation.
+          for i in $(seq 1 40); do
+            resp=$(curl -s -XPOST http://localhost:8080/api/assist \
+              -H 'content-type: application/json' \
+              -d '{"question":"how do I roll back inventory?"}')
+            echo "$resp" | grep -q 'doc:rollback-inventory' && break
+            sleep 3
+          done
       - uses: actions/setup-node@v4
         with:
           node-version: "20"

@@ -10,12 +10,14 @@ COPY inventory-service inventory-service
 COPY gateway gateway
 COPY log-collector log-collector
 COPY ops-assistant ops-assistant
+COPY docs docs
 RUN mvn -B -q -pl log-collector -am -DskipTests package
 
 FROM eclipse-temurin:21-jre AS run
 WORKDIR /app
 RUN useradd -r -u 10001 cloudflow
 COPY --from=build /workspace/log-collector/target/log-collector-*.jar app.jar
+COPY --from=build /workspace/docs/runbooks /app/docs/runbooks
 USER 10001
 EXPOSE 8083
 ENTRYPOINT ["java", "-jar", "/app/app.jar"]
